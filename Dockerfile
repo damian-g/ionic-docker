@@ -1,5 +1,4 @@
-FROM     ubuntu:14.04.4
-MAINTAINER marco [dot] turi [at] hotmail [dot] it
+FROM ubuntu:14.04.4
 
 ENV DEBIAN_FRONTEND=noninteractive \
     ANDROID_HOME=/opt/android-sdk-linux \
@@ -26,7 +25,7 @@ RUN apt-get update &&  \
     apt-get install -f -y && \
     apt-get clean && \
     rm google-chrome-stable_current_amd64.deb && \
-    mkdir Sources && \
+    mkdir app && \
     mkdir -p /root/.cache/yarn/ && \
 
 # Font libraries
@@ -36,7 +35,7 @@ RUN apt-get update &&  \
     apt-get update && apt-get install -y -q python-software-properties software-properties-common  && \
     add-apt-repository ppa:webupd8team/java -y && \
     echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
-    apt-get update && apt-get -y install oracle-java7-installer && \
+    apt-get update && apt-get -y install oracle-java8-installer && \
 
 # Ruby
     apt-add-repository ppa:brightbox/ruby-ng -y && \
@@ -64,9 +63,10 @@ ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:/opt/tools
 # Install sdk elements
 COPY sh /opt/tools
 
-RUN ["/opt/tools/android-accept-licenses.sh", "android update sdk --all --no-ui --filter platform-tools,tools,build-tools-23.0.2,android-23,extra-android-support,extra-android-m2repository,extra-google-m2repository"]
+RUN ["/opt/tools/android-accept-licenses.sh", "android update sdk --all --no-ui --filter platform-tools,tools,build-tools-24.0.0,android-24,extra-android-support,extra-android-m2repository,extra-google-m2repository"]
 RUN unzip ${ANDROID_HOME}/temp/*.zip -d ${ANDROID_HOME}
 
-WORKDIR Sources
+WORKDIR app
 EXPOSE 8100 35729
+
 CMD ["ionic", "serve"]
